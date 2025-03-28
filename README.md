@@ -38,7 +38,7 @@ email-automation/
 └── main.py
 ```
 
-## 📆 Formato do CSV
+## Formato do CSV
 Arquivo: `contacts/colaboradores.csv`
 
 ```csv
