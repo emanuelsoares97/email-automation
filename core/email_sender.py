@@ -43,4 +43,4 @@ def send_email(destinatario, nome=None, file=None, tipo=None):
     
     except Exception as e:
         logger.error(f"Tentativa de enviar email, erro: {e}")
-        raise f"Erro ao enviar email: {e}"
+        raise ValueError(f"Erro ao enviar email: {e}")
