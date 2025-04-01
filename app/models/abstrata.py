@@ -1,12 +1,11 @@
-# abstrata.py
 from sqlalchemy import Column, Integer
 from sqlalchemy.inspection import inspect
 from app.utils.logger_util import get_logger
-from base import Base  # Importa o Base definido em base.py
+from app.database.database import db
 
 logger = get_logger(__name__)
 
-class BaseModel(Base):
+class BaseModel(db.Model):
     __abstract__ = True
 
     id = Column(Integer, primary_key=True, autoincrement=True)
