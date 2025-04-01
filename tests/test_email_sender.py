@@ -25,3 +25,23 @@ def test_envio_com_sucesso_sem_anexo(monkeypatch):
     monkeypatch.setattr("smtplib.SMTP_SSL", fake_smtp)
 
     send_email(destinatario="teste@email.com", nome="João", tipo="boas_vindas")
+
+# Teste de envio com dados simulados com anexo
+def test_envio_com_sucesso_com_anexo(monkeypatch):
+    def fake_smtp(*args, **kwargs):
+        class FakeSMTP:
+            def __enter__(self): return self
+            def __exit__(self, *a): pass
+            def login(self, email, pwd): pass
+            def send_message(self, msg): pass
+        return FakeSMTP()
+    
+    monkeypatch.setattr("smtplib.SMTP_SSL", fake_smtp)
+
+    send_email(destinatario="teste@email.com", nome="João", file="tuta.pdf", tipo="elogio")
+
+def test_envio_falha_quando_anexo_nao_existe():
+    with pytest.raises(Exception):
+        send_email(destinatario="teste@email.com", nome="João", file="ola.pdf", tipo="elogio")
+
+
