@@ -1,18 +1,25 @@
+# config.py
+
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  # Carrega variáveis do .env
+load_dotenv()
 
 class Config:
-    """Configuração padrão para a aplicação"""
+    """Configuração base da aplicação"""
     DEBUG = os.environ.get("DEBUG", "False") == "True"
-    SECRET_KEY = os.environ.get("SECRET_KEY", "default-secret-key")
+    SECRET_KEY = os.environ.get("SECRET_KEY", "sua_chave_secreta")
 
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "DATABASE_URL",
-        f"sqlite:///{os.path.join(os.path.dirname(os.path.abspath(__file__)), 'db', 'database.db')}"
-    )
+    # Garante fallback se estiver ausente ou vazio
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    default_db_path = os.path.join(base_dir, "db", "database.db")
+    default_db_uri = f"sqlite:///{default_db_path}"
+
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or default_db_uri
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+
+
 
 
 class TestConfig(Config):
