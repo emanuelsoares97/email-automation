@@ -1,11 +1,13 @@
-
-from app.database import Database
 from app.models.utilizador import Utilizador
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.utils.logger_util import get_logger
 from flask import g
 from app.utils.validacao import validar_email
+from app.database.database import db
+import secrets
+import string
+
 
 logger=get_logger(__name__)
 
@@ -14,11 +16,17 @@ class UtilizadorService:
 
     logger = get_logger(__name__)
 
+
+    @staticmethod
+    def gerar_password_temporaria(tamanho=10):
+        caracteres = string.ascii_letters + string.digits + "!@#$%&*"
+        return ''.join(secrets.choice(caracteres) for _ in range(tamanho))
+
+
     @classmethod
     def autenticar(cls, email, password):
         """Verifica credenciais e retorna o utilizador autenticado"""
-        session = Database.get_session()
-        utilizador = session.query(Utilizador).filter_by(email=email).first()
+        utilizador = Utilizador.query.filter_by(email=email).first()
 
         if utilizador and check_password_hash(utilizador.password, password):
             cls.logger.info(f"Utilizador {utilizador.email} autenticado.")
@@ -29,9 +37,8 @@ class UtilizadorService:
 
 
     @classmethod
-    def criar_utilizador(cls, nome, email, password, role="user"):
+    def criar_utilizador(cls, nome, email, password=None, role="user"):
         """Cria um novo utilizador se não existir"""
-        session = Database.get_session()
 
         if not nome or not email or not password:
             cls.logger.error(f"Tentativa de criar utilizador com dados em falta.")
@@ -42,14 +49,17 @@ class UtilizadorService:
             return {"erro": "Email inválido!"}, 400
         email = email
 
-        if session.query(Utilizador).filter_by(email=email).first():
+        if Utilizador.query.filter_by(email=email).first():
             cls.logger.info(f"Tentativa de criar utilizador com email já registado, {email}.")
             return {"erro": "Já existe um utilizador com este email!"}, 400
         
-        if role == "admin" and not g.current_user["role"] != "admin":  
+        if role == "admin" and g.current_user["role"] != "admin":  
             cls.logger.error("Tentativa de criar utilizador admin sem permissão.")  
             return {"erro": "Apenas administradores podem criar contas com permissão de admin."}, 403
         
+        if not password:
+            password = cls.gerar_password_temporaria()
+
         hashed_password = generate_password_hash(password)
 
         if role not in ["admin", "gerente", "estoque", "user"]:
@@ -58,8 +68,8 @@ class UtilizadorService:
         novo_utilizador = Utilizador(nome=nome, email=email, password=hashed_password, role=role)
 
         try:
-            session.add(novo_utilizador)
-            session.commit()
+            db.session.add(novo_utilizador)
+            db.session.commit()
             return {
         "mensagem": "Utilizador criado com sucesso!",
         "utilizador": {
@@ -69,7 +79,7 @@ class UtilizadorService:
         }
     }, 201
         except IntegrityError:
-            session.rollback()
+            db.session.rollback()
             return {"erro": "Erro ao criar utilizador."}, 500
 
 
