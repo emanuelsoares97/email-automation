@@ -2,6 +2,7 @@ from flask import Flask
 from app.utils.logger_util import get_logger
 from config import Config
 from app.database.database import db
+from app.routes import init_routes
 
 logger = get_logger(__name__)
 
@@ -20,6 +21,8 @@ def create_app(config_class=Config):
         from app.models import register_models
         register_models()
         db.create_all()
+
+    init_routes(app)
 
     return app
 
