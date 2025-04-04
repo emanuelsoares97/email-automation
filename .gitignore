@@ -36,3 +36,7 @@ db/*.db
 # Arquivos do sistema
 .DS_Store
 Thumbs.db
+
+notas.txt
+
+migrations/versions/
