@@ -3,7 +3,7 @@ from email.message import EmailMessage
 from core.template_loader import load_template
 import smtplib
 from dotenv import load_dotenv
-from utils.logger_util import get_logger
+from app.utils.logger_util import get_logger
 
 logger= get_logger(__name__)
 
@@ -36,7 +36,7 @@ def send_email(destinatario, nome=None, file=None, tipo=None):
             msg.add_attachment(file_data, maintype="application", subtype="pdf", filename=file_name)
             logger.info(f"Anexo adicionado: {file}")
 
-        # 3️⃣ Envia o e-mail
+        #  Envia o e-mail
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
             smtp.login(email, password)
             smtp.send_message(msg)
