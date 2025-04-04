@@ -7,10 +7,13 @@ class Utilizador(BaseModel):
 
     id = Column(Integer, primary_key=True, autoincrement=True)  #Garantir que `id` fica primeiro!
     nome = Column(String(100), nullable=False)
-    email= Column(String, nullable=False)
+    email= Column(String, nullable=False, unique=True)
     password=Column(String, nullable=False)
     role = Column(String, default="user") 
     ativo = Column(Boolean, default=True)
 
     # Relacionamento com o UserPlan para acessar o plano do usuário
     planos = relationship("UserPlan", backref="utilizador", lazy="dynamic")  # Acessa os planos associados ao utilizador
+
+    def __repr__(self):
+        return f'<User {self.nome}>'
