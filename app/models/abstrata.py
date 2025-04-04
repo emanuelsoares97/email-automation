@@ -25,10 +25,6 @@ class BaseModel(db.Model):
     def from_dict(cls, data):
         return cls(**data)
 
-    @classmethod
-    def get_base(cls):
-        """Retorna o declarative base utilizado"""
-        return Base
 
     @classmethod
     def criar_tabelas(cls):
