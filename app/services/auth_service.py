@@ -1,13 +1,13 @@
 import jwt
-import uuid  #uuid para gerar identificadores únicos
-from flask import request, jsonify, g 
+import uuid
+from flask import request, jsonify, g
 from functools import wraps
 from config import Config
 from datetime import datetime, timezone, timedelta
-from app.services.tokenrevogado_manager import TokenService
+from app.services.tokenrevogado_service import TokenService
 from app.utils.logger_util import get_logger
 
-logger= get_logger(__name__)
+logger = get_logger(__name__)
 
 class AuthService:
     """Classe responsável por gerenciar autenticação JWT"""
@@ -15,14 +15,13 @@ class AuthService:
     @staticmethod
     def gerar_tokens(utilizador):
         """Gera um access token (curto prazo) e um refresh token (longo prazo) com `jti`"""
-
         try:
             jti_access = str(uuid.uuid4())  # Identificador único para o access token
             jti_refresh = str(uuid.uuid4())  # Identificador único para o refresh token
 
             access_token = jwt.encode(
                 {
-                    "id": utilizador.id, 
+                    "id": utilizador.id,
                     "nome": utilizador.nome,
                     "email": utilizador.email,
                     "role": utilizador.role,
@@ -35,7 +34,7 @@ class AuthService:
 
             refresh_token = jwt.encode(
                 {
-                    "id": utilizador.id,  # Agora acessamos como objeto
+                    "id": utilizador.id,
                     "jti": jti_refresh,  # Adicionamos `jti` ao refresh token
                     "exp": datetime.now(timezone.utc) + timedelta(days=7)  # Expira em 7 dias
                 },
@@ -43,16 +42,12 @@ class AuthService:
                 algorithm="HS256"
             )
 
-            logger.info("Token gerado com sucesso.")
+            logger.info(f"Tokens gerados com sucesso para o usuário {utilizador.email}.")
             return access_token, refresh_token
-        
-            
 
         except Exception as e:
-            logger.error(f"Tentativa de gerar token, erro: {str(e)}")
+            logger.error(f"Erro ao gerar tokens: {str(e)}")
             return {"mensagem": f"erro ao tentar gerar token: {str(e)}"}
-
-
 
     @staticmethod
     def validar_token(token):
@@ -70,15 +65,15 @@ class AuthService:
             if TokenService.esta_na_blacklist(payload["jti"]):
                 return None, "Token inválido. Faça login novamente."
 
-            logger.debug("Token validado com sucesso.")
+            logger.debug(f"Token {payload['jti']} validado com sucesso.")
             return payload, None
+
         except jwt.ExpiredSignatureError:
-            logger.warning("Tentativa de validar token expirado")
+            logger.warning(f"Token expirado: {token}")
             return None, "Token expirado. Faça login novamente."
         except jwt.InvalidTokenError:
-            logger.warning("Tentativa de válidar token inválido.")
+            logger.warning(f"Token inválido: {token}")
             return None, "Token inválido."
-
 
     @staticmethod
     def token_required(f):
@@ -91,7 +86,6 @@ class AuthService:
             if error:
                 return jsonify({"Alerta": error}), 401
 
-            
             g.current_user = {
                 "email": payload["email"],
                 "nome": payload["nome"],
@@ -103,7 +97,6 @@ class AuthService:
 
         return decorated
 
-
     @staticmethod
     def role_required(*required_roles):
         """Decorator que protege rotas exigindo uma role específica"""
@@ -111,7 +104,7 @@ class AuthService:
             @wraps(f)
             def decorated_function(*args, **kwargs):
                 user_role = g.current_user["role"]
-                user_nome= g.current_user["nome"]
+                user_nome = g.current_user["nome"]
 
                 if user_role not in required_roles:
                     logger.warning(f"Tentativa de alterar dados sem permissão, {user_nome}")
