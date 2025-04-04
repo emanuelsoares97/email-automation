@@ -1,14 +1,21 @@
-from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey, Boolean
 from app.models.abstrata import BaseModel
 from datetime import datetime, timezone
+from sqlalchemy.orm import relationship
 
 class Template(BaseModel):
-
     __tablename__ = "templates"
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('utilizadores.id'), nullable=True)  # Pode ser NULL para templates gerais
     name = Column(String(255), nullable=False)
     subject = Column(String(255), nullable=False)
     body = Column(Text, nullable=False)
-    criado_em = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    criado_em = Column(DateTime, default=lambda: datetime.now())
+    is_global = Column(Boolean, default=False)  # Indica se o template é geral
+
+    
+    utilizador = relationship("Utilizador", backref="templates")
+
+    def __repr__(self):
+        return f"<Template {self.name} - {self.subject}>"
