@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_migrate import Migrate
 from app.utils.logger_util import get_logger
 from config import Config
 from app.database.database import db
@@ -15,16 +16,16 @@ def create_app(config_class=Config):
 
     db.init_app(app)
 
-    
+    # Configurando Flask-Migrate
+    migrate = Migrate(app, db) #cuida da criaçao das tabelas
 
     with app.app_context():
         from app.models import register_models
         register_models()
-        db.create_all()
 
     init_routes(app)
 
     return app
 
-__all__ = ['create_app']
 
+__all__ = ['create_app']
