@@ -1,5 +1,3 @@
-# config.py
-
 import os
 from dotenv import load_dotenv
 
@@ -18,7 +16,13 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or default_db_uri
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-
+    # Configurações do Flask-Mail
+    MAIL_SERVER = os.environ.get("SMTP_SERVER", "smtp.gmail.com")
+    MAIL_PORT = int(os.environ.get("SMTP_PORT", 465))  # 465 para SSL, 587 para TLS
+    MAIL_USE_SSL = bool(os.environ.get("MAIL_USE_SSL", True))  # Usar SSL por padrão
+    MAIL_USERNAME = os.environ.get("EMAIL")
+    MAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
+    MAIL_DEFAULT_SENDER = os.environ.get("EMAIL_NAME", "Seu Nome de Remetente")
 
 
 
