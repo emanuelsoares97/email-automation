@@ -1,8 +1,9 @@
 from flask import Blueprint, request, jsonify, make_response, g
 from app.services.utilizador_service import UtilizadorService
-from app.services.tokenrevogado_manager import TokenService
+from app.services.tokenrevogado_service import TokenService
 from app.utils.logger_util import get_logger
 from app.services.auth_service import AuthService
+from app.models.utilizador import Utilizador
 from app.utils.validacao import validar_email
 import jwt
 from collections import namedtuple
@@ -104,17 +105,33 @@ def refresh_token():
         logger.warning("Tentativa de refresh sem token")
         return jsonify({"erro": "Refresh token é obrigatório!"}), 401
 
-    token = token.replace("Bearer ", "")  # Remove "Bearer " se estiver presente
+    token = token.replace("Bearer ", "")
 
     try:
+        # Decodifica o refresh token
         payload = jwt.decode(token, Config.SECRET_KEY, algorithms=["HS256"])
+
+        # Verifica se o token está na blacklist
+        if TokenService.esta_na_blacklist(payload["jti"]):
+            return jsonify({"erro": "Refresh token revogado. Faça login novamente!"}), 401
+
+       
+        utilizador_id = payload["id"]
+
         
-        Utilizador = namedtuple("Utilizador", ["id", "nome", "email", "role"])
-        utilizador_obj = Utilizador(id=payload["id"], nome=payload.get("nome", ""), email="", role="")
+        utilizador = Utilizador.query.filter_by(id=utilizador_id).first()
 
-        novo_access_token, _ = AuthService.gerar_tokens(utilizador_obj)
+        if not utilizador:
+            return jsonify({"erro": "Usuário não encontrado!"}), 404
 
-        return jsonify({"access_token": novo_access_token}), 200
+        # Gera um novo access token
+        novo_access_token, novo_refresh_token = AuthService.gerar_tokens(utilizador)
+
+        return jsonify({
+            "access_token": novo_access_token,
+            "refresh_token": novo_refresh_token  # Retorna também um novo refresh token, se desejado
+        }), 200
+
     except jwt.ExpiredSignatureError:
         return jsonify({"erro": "Refresh token expirado. Faça login novamente!"}), 401
     except jwt.InvalidTokenError:
