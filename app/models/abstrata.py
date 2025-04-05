@@ -12,6 +12,17 @@ class BaseModel(db.Model):
     logger.info("Classe Abstrata iniciada")
 
     def to_dict(self):
+        
+        """
+            Converte o objeto SQLAlchemy em um dicionário com os atributos da tabela.
+
+            Utiliza o módulo `inspect` do SQLAlchemy para iterar sobre todos os atributos 
+            de coluna definidos no modelo e extrair seus valores.
+
+            Returns:
+                dict: Um dicionário com chave/valor representando os campos e dados do objeto.
+                    Em caso de erro, retorna um dicionário com uma mensagem de erro.
+        """
         try:
             if not hasattr(self, "__table__"):
                 raise AttributeError("Modelo sem `__table__`, pode estar mal definido.")
