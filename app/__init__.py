@@ -12,7 +12,7 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
 
     logger.info("Iniciando a app Flask.")
-    logger.debug(f"Configurações carregadas {app.config}")
+    logger.debug(f"Configurações carregadas")
 
     db.init_app(app)
 
