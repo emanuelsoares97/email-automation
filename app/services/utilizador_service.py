@@ -8,10 +8,12 @@ import secrets
 import string
 from flask import g
 
-logger = get_logger(__name__)
+
 
 class UtilizadorService:
     """Gerencia autenticação e operações com utilizadores"""
+
+    logger = get_logger(__name__)
 
     @staticmethod
     def gerar_password_temporaria(tamanho=10):
