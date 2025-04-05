@@ -2,15 +2,13 @@ from flask import Blueprint, request, jsonify
 from app.services.utilizador_service import UtilizadorService
 from app.services.auth_service import AuthService
 from app.utils.logger_util import get_logger
-from config import Config
-import jwt
 from flask import g
 
 logger = get_logger(__name__)
 
 utilizador_bp = Blueprint("utilizador", __name__)
 
-@utilizador_bp.route("/novo", methods=["POST"])
+@utilizador_bp.route("/new", methods=["POST"])
 @AuthService.token_required
 @AuthService.role_required("admin")
 def criar_utilizador():
