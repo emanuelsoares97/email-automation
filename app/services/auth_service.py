@@ -87,10 +87,11 @@ class AuthService:
                 return jsonify({"Alerta": error}), 401
 
             g.current_user = {
-                "email": payload["email"],
-                "nome": payload["nome"],
-                "role": payload["role"],
-                "jti": payload["jti"]  # identificador único do token
+                "email": payload.get("email"),  # Usando get(), se "email" não existir, retorna None
+                "nome": payload.get("nome"),    # Usando get(), se "nome" não existir, retorna None
+                "role": payload.get("role"),    # Usando get(), se "role" não existir, retorna None
+                "jti": payload.get("jti"),      # Usando get(), se "jti" não existir, retorna None
+                "id": payload.get("id")         # Usando get(), se "id" não existir, retorna None
             }
 
             return f(*args, **kwargs)
