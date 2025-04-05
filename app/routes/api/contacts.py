@@ -3,9 +3,9 @@ from app import db
 from app.services.auth_service import AuthService
 from app.models.contact import Contact
 
-bp_contact = Blueprint('contact', __name__)
+contact_bp = Blueprint('contact', __name__)
 
-@bp_contact.route('/add_contact', methods=['POST'])
+@contact_bp.route('/add_contact', methods=['POST'])
 @AuthService.token_required
 def add_contact():
     # Recuperar o JSON enviado
