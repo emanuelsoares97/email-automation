@@ -10,19 +10,26 @@ class TemplateService:
 
     @staticmethod
     def create_template(user, name, subject, body, is_global=False):
-        if is_global and user.role != 'admin':
-            raise Exception("Somente admins podem criar templates globais.")
+
+        try: 
+            if is_global and user.role != 'admin':
+                raise Exception("Somente admins podem criar templates globais.")
+            
+            new_template = Template(
+                user_id=None if is_global else user.id,
+                name=name,
+                subject=subject,
+                body=body,
+                is_global=is_global
+            )
+            db.session.add(new_template)
+            db.session.commit()
+            return new_template, 201
         
-        new_template = Template(
-            user_id=None if is_global else user.id,
-            name=name,
-            subject=subject,
-            body=body,
-            is_global=is_global
-        )
-        db.session.add(new_template)
-        db.session.commit()
-        return new_template
+        except Exception as e:
+            logger.error(f"Erro ao tentar criar um template com o utilizador: {g.current_user['email']}, erro: {str(e)}", exc_info=True)
+            return ({"erro": "Erro interno no servidor"}), 500
+           
 
     @staticmethod
     def get_template(template_id):
