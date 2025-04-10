@@ -34,4 +34,35 @@ def lista_templates():
         logger.error(f"Erro desconhecido ao listar templates: {str(e)}")
         return jsonify({"erro": "Erro desconhecido."}), 500
    
-            
+@template_bp.route("/new", methods=["POST"])
+@AuthService.token_required
+def novo_template():
+
+    try:
+        data=request.get_json()
+
+        if not isinstance(data, dict):
+            return jsonify({"erro": "Dados inválidos."}), 400
+
+        if not data or "name" not in data or "subject" not in data or "body" not in data:
+                logger.warning("Tentativa de criar template sem dados completos.")
+                return jsonify({"erro": "Nome, assunto e corpo do email são obrigatórios!"}), 400
+        
+        isglobal = data.get("is_global")
+
+        if not isglobal:
+            isglobal=False
+
+        resposta, status = TemplateService.create_template(
+            data.get("user_id"),
+            data.get("name"),
+            data.get("subject"),
+            data.get("body"),
+            data.get("is_global")
+        )
+
+        return jsonify(resposta), status
+
+    except Exception as e:
+        logger.error(f"Erro ao criar template: {str(e)}", exc_info=True)
+        return jsonify({"erro": "Erro interno no servidor"}), 500
