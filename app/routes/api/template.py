@@ -18,7 +18,7 @@ template_bp = Blueprint("template", __name__)
 
 @template_bp.route("/list", methods=["GET"])
 @AuthService.token_required
-def lista_templates():
+def list_templates():
     """Endpoint para listar templates"""
     try:
         logger.info(f"Utilizador {g.current_user['email']}, está a ver a lista de templates")
@@ -36,7 +36,7 @@ def lista_templates():
    
 @template_bp.route("/new", methods=["POST"])
 @AuthService.token_required
-def novo_template():
+def new_template():
 
     try:
         data=request.get_json()
@@ -54,7 +54,7 @@ def novo_template():
             isglobal=False
 
         resposta, status = TemplateService.create_template(
-            data.get("user_id"),
+            g.current_user["id"],
             data.get("name"),
             data.get("subject"),
             data.get("body"),
@@ -66,3 +66,23 @@ def novo_template():
     except Exception as e:
         logger.error(f"Erro ao criar template: {str(e)}", exc_info=True)
         return jsonify({"erro": "Erro interno no servidor"}), 500
+    
+@template_bp.route("/<int:template_id>", methods=["PATCH"])
+@AuthService.token_required
+def update_template(template_id):
+
+    data=request.get_json()
+
+    if not isinstance(data, dict):
+            return jsonify({"erro": "Dados inválidos."}), 400
+    
+    resposta, status = TemplateService.update_template(
+         g.current_user["id"], 
+         template_id, 
+         data
+    )
+    
+    return jsonify(resposta), status
+    
+
+
