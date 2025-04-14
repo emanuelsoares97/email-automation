@@ -83,6 +83,14 @@ def update_template(template_id):
     )
     
     return jsonify(resposta), status
+
+@template_bp.route("/<int:template_id>", methods=["DELETE"])
+@AuthService.token_required
+def delete_template(template_id):
+    resposta, status = TemplateService.delete_template(template_id)
+
+    return resposta, status 
+
     
 
 
