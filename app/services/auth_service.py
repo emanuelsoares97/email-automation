@@ -26,7 +26,7 @@ class AuthService:
                     "email": utilizador.email,
                     "role": utilizador.role,
                     "jti": jti_access,  # `jti` ao access token
-                    "exp": datetime.now(timezone.utc) + timedelta(minutes=15)  # Expira em 15 min
+                    "exp": datetime.now(timezone.utc) + timedelta(days=7)  # Expira em 15 min
                 },
                 Config.SECRET_KEY,
                 algorithm="HS256"
