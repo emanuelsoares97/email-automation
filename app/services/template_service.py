@@ -44,10 +44,6 @@ class TemplateService:
            
 
     @staticmethod
-    def get_template(template_id):
-        return Template.query.get(template_id)
-
-    @staticmethod
     def get_list_template(user_id):
 
         try:
