@@ -12,6 +12,7 @@ class Contact(BaseModel):
     name = Column(String(255), nullable=False)
     email = Column(String(255), nullable=False)
     criado_em = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    organization_id = Column(Integer, ForeignKey("organization.id"), nullable=True)
 
 
      # Definição dos relacionamentos
