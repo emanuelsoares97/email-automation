@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Boolean, UniqueConstraint, ForeignKey
 from app.models.abstrata import BaseModel
 from sqlalchemy.orm import relationship
 
@@ -15,9 +15,12 @@ class Utilizador(BaseModel):
     password = Column(String, nullable=False)
     role = Column(String, default="user") 
     ativo = Column(Boolean, default=True)
+    organization_id = Column(Integer, ForeignKey("organization.id"), nullable=True)
 
     # Relacionamento 
     planos = relationship("UserPlan", back_populates="utilizador", lazy="dynamic")
+
+    
 
     def __repr__(self):
         return f'<User {self.nome}>'
