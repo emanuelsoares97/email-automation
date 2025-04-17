@@ -17,7 +17,7 @@ def add_contact():
     # valida se ja existe esse email na lista do utilizador
     existing_contact = Contact.query.filter_by(user_id=user_id, email=email).first()
     if existing_contact:
-        return jsonify({"error": "Já existe um contato com este e-mail para este usuário."}), 400
+        return jsonify({"error": "Já existe um contato com este e-mail para este utilizador."}), 400
 
     # Criar novo contato
     new_contact = Contact(user_id=user_id, name=name, email=email)
