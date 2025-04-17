@@ -17,7 +17,7 @@ def create_app(config_class=Config):
     db.init_app(app)
 
     # Configurando Flask-Migrate
-    migrate = Migrate(app, db) #cuida da criaçao das tabelas
+    Migrate(app, db) #cuida da criaçao das tabelas
 
     with app.app_context():
         from app.models import register_models
