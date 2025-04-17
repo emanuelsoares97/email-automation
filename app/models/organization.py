@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 class Organization(BaseModel):
 
-    __table___tablename__ = "organization"
+    __tablename__ = "organization"
     
     id = Column(Integer, primary_key=True)
     name = Column(String(128), unique=True, nullable=False)
