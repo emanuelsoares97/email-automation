@@ -14,5 +14,6 @@ class UserPlan(BaseModel):
 
     # Relacionamentos
     utilizador = relationship("Utilizador", back_populates="planos")
-    plano = relationship("Plan", backref="user_plans")
+    plano = relationship("Plan",       back_populates="user_plans")
+
 
