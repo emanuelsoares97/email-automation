@@ -14,6 +14,7 @@ class EmailLog(BaseModel):
     criado_em = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     # Definição dos relacionamentos
-    utilizador = relationship("Utilizador", backref="email_logs")
-    contacto = relationship("Contact", backref="email_logs")
-    template = relationship("Template", backref="email_logs")
+    utilizador = relationship("Utilizador", back_populates="email_logs")
+    contacto    = relationship("Contact",    back_populates="email_logs")
+    template    = relationship("Template",   back_populates="email_logs")
+
