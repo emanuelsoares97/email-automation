@@ -4,10 +4,13 @@ from app.models.abstrata import BaseModel
 from datetime import datetime, timezone
 
 class Organization(BaseModel):
-
-    __tablename__ = "organization"
     
-    id = Column(Integer, primary_key=True)
-    name = Column(String(128), unique=True, nullable=False)
+    __tablename__ = "organizations"
 
-    utilizador = relationship("Utilizador", backref="organization", lazy=True)
+    id   = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False)
+
+    areas    = relationship("Area",       back_populates="organization", lazy="dynamic")
+    contacts = relationship("Contact",    back_populates="organization", lazy="dynamic")
+    users    = relationship("Utilizador", back_populates="organization", lazy="dynamic")
+
