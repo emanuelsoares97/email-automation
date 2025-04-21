@@ -15,10 +15,18 @@ class Utilizador(BaseModel):
     password = Column(String, nullable=False)
     role = Column(String, default="user") 
     ativo = Column(Boolean, default=True)
-    organization_id = Column(Integer, ForeignKey("organization.id"), nullable=True)
+    organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=True)
+    area_id         = Column(Integer, ForeignKey("areas.id"),         nullable=True)
 
     # Relacionamento 
-    planos = relationship("UserPlan", back_populates="utilizador", lazy="dynamic")
+    organization = relationship("Organization", back_populates="users")
+    area         = relationship("Area",         back_populates="users")
+    contacts     = relationship("Contact",      back_populates="utilizador", lazy="dynamic")
+    templates    = relationship("Template",     back_populates="utilizador", lazy="dynamic")
+    planos       = relationship("UserPlan",     back_populates="utilizador", lazy="dynamic")
+    email_logs   = relationship("EmailLog",     back_populates="utilizador", lazy="dynamic")
+
+
 
     
 
