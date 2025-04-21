@@ -15,7 +15,10 @@ class Template(BaseModel):
     is_global = Column(Boolean, default=False)  # Indica se o template é geral
 
     
-    utilizador = relationship("Utilizador", backref="templates")
+    user_id  = Column(Integer, ForeignKey("utilizadores.id"), nullable=True)
+
+    utilizador = relationship("Utilizador", back_populates="templates")
+
 
     def __repr__(self):
         return f"<Template {self.name} - {self.subject}>"
