@@ -49,7 +49,7 @@ class TemplateService:
         try:
             logger.info("Lista de templates")
             
-            if g.current_user["role"]== "admin":
+            if g.current_user["role"] == "admin":
 
                 listas = Template.query.all()
 
@@ -61,7 +61,7 @@ class TemplateService:
                 return [lista.to_dict() for lista in listas]
             
         except Exception as e:
-            logger.error(f"Erro ao tentar buscar a lista de templates com o utilizador: {g.current_user['email']}, erro: {str(e)}", exc_info=True)
+            logger.error(f"Erro ao tentar procurar a lista de templates com o utilizador: {g.current_user['email']}, erro: {str(e)}", exc_info=True)
             return ({"erro": "Erro interno no servidor"}), 500
 
     @staticmethod
