@@ -10,10 +10,20 @@ logger= get_logger(__name__)
 class ContactService:
     
     @staticmethod
-    def list_contacts():
-        # Consulta os contatos do usuário (ou do admin)
-        contacts = Contact.query.all()  # Modifique conforme necessário
-        return {"contacts": [contact.to_dict() for contact in contacts]}, 200
+    def get_list_contacts():
+
+        user = g.current_user
+            
+        if user["role"] == "admin":
+
+            contacts = Contact.query.all()
+
+            return [contact.to_dict() for contact in contacts], 200
+
+        else:
+            contacts= Contact.query.filter(or_(Contact.user_id==user["id"], ))
+    
+    
 
     @staticmethod
     def create_contact(data):
