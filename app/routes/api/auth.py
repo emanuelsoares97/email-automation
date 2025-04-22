@@ -3,7 +3,7 @@ from app.services.utilizador_service import UtilizadorService
 from app.services.tokenrevogado_service import TokenService
 from app.utils.logger_util import get_logger
 from app.services.auth_service import AuthService
-from app.models.utilizador import Utilizador
+from app.models.user import Utilizador
 from app.utils.validacao import validar_email
 import jwt
 from collections import namedtuple
