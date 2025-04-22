@@ -56,7 +56,9 @@ class TemplateService:
                 return [lista.to_dict() for lista in listas]
             else:
                 
-                listas = Template.query.filter(or_(Template.is_global== True, Template.user_id==user_id)).all()
+                listas = Template.query.filter(or_(
+                    Template.is_global== True, 
+                    Template.user_id==user_id)).all()
 
                 return [lista.to_dict() for lista in listas]
             
