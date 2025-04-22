@@ -1,5 +1,5 @@
 from app.database.database import db
-from app.models.tokenrevogado import TokenRevogado
+from app.models.blacklistedtoken import TokenRevogado
 from app.utils.logger_util import get_logger
 
 logger = get_logger(__name__)
