@@ -1,4 +1,4 @@
-from app.models.utilizador import Utilizador
+from app.models.user import Utilizador
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.utils.logger_util import get_logger
