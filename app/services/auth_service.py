@@ -6,6 +6,7 @@ from config import Config
 from datetime import datetime, timezone, timedelta
 from app.services.tokenrevogado_service import TokenService
 from app.utils.logger_util import get_logger
+from app.models.user import User
 
 logger = get_logger(__name__)
 
@@ -86,14 +87,13 @@ class AuthService:
             if error:
                 return jsonify({"Alerta": error}), 401
 
-            g.current_user = {
-                "email": payload.get("email"),  # get(), se "email" não existir, retorna None
-                "nome": payload.get("nome"),   
-                "role": payload.get("role"),    
-                "jti": payload.get("jti"),
-                "organization_id": payload.get("organization_id"),      
-                "id": payload.get("id")         
-            }
+            user_id = payload.get("id")
+            user = User.query.get(user_id)
+
+            if not user:
+                return jsonify({"error": "Utilizador não encontrado"}), 401
+
+            g.current_user = user  # faz com que seja possivel usar poo pelo orm
 
             return f(*args, **kwargs)
 
