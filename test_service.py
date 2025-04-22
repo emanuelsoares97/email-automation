@@ -1,6 +1,6 @@
 from app import create_app, db
 from app.services.template_service import TemplateService
-from app.models.utilizador import Utilizador
+from app.models.user import Utilizador
 
 # Cria a app
 app = create_app()
