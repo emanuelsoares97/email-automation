@@ -1,6 +1,6 @@
 from app import create_app
 from app.database.database import db
-from app.models.utilizador import Utilizador
+from app.models.user import Utilizador
 from werkzeug.security import generate_password_hash
 
 app = create_app()
@@ -17,6 +17,3 @@ with app.app_context():
         )
         db.session.add(admin)
         db.session.commit()
-        print("✅ Admin criado com sucesso.")
-    else:
-        print("⚠️ O admin já existe.")
