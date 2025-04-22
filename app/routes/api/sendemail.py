@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, make_response, g
-from app.services.utilizador_service import UtilizadorService
+from app.services.user_service import UtilizadorService
 from app.services.tokenrevogado_service import TokenService
 from app.utils.logger_util import get_logger
 from app.services.auth_service import AuthService
