@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String
-from app.models.abstrata import BaseModel
+from app.models.abstract import BaseModel
 from sqlalchemy.orm import relationship
 
 class Plan(BaseModel):
@@ -10,4 +10,4 @@ class Plan(BaseModel):
     name = Column(String(50), nullable=False)
     email_limit = Column(Integer, nullable=False)
 
-    user_plans = relationship("UserPlan", back_populates="plano", lazy="dynamic")
+    user_plans = relationship("UserPlan", back_populates="plans", lazy="dynamic")
